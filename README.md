@@ -9,7 +9,6 @@ The BSTN package can be installed with the `devtools` package:
   ```{r, eval = FALSE}
 library(devtools) 
 devtools::install_github(repo='InkooLee/BSTN')
-
 ```
 ## Documentation
 
