@@ -35,8 +35,6 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
   eta.save <- matrix(NA, p, n.save)
   gamma.est.save <- array(NA, dim = c(t,s,b,p,n.save))
 
-  source("./functions_tensor.R")
-
   #load required packages
   library(expm); library(Matrix); library(matrixcalc); library(LaplacesDemon)
   library(MASS); library(msm); library(truncnorm); library(abind)
@@ -160,8 +158,6 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   B.est.update <- function(X,Y,W,lam.est, inv.Sigma, inv.R1, inv.R2, t,s,p, omega, eta.est){
 
-
-
     psi <- rbeta(1, 0.1 + sum(omega), 0.1 + t*s*b*p - sum(omega) )
     B <- array(NA, dim = c(t,s,2,p)) ;
 
@@ -281,8 +277,9 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
     }
   }
 
-  # fill missing responses with the new missing values
+  source("./functions_tensor.R")
 
+  # fill missing responses with the new missing values
   for (N in 1:n){
     vecy[,N] = ifelse (is.na(vecy[,N]), MASS::mvrnorm(length(delta_p[,N][(delta_p[,N]==1)]), mu = t(B.est)%*%X[,N] + kronecker(diag(lam.est),diag(t*s))%*%W[,N], Sigma = kronecker(R3,R2,R1)) , vecy[,N])
   }
