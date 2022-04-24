@@ -47,6 +47,14 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   rho.update <- function(t,s,rho,vecy,X,B.est,lam.est,W,sigma.sq){
 
+    kron<-function(...)
+    {
+      M<-list(...)
+      if(is.list(M[[1]])) { M<-M[[1]] }
+      JM<-1 ; for(j in 1:length(M)){ JM<-kronecker(JM,M[[j]]) }
+      JM
+    }
+
     rho.prop = c(rbeta(1,2.5,2), rbeta(1,2.5,2), rbeta(1,2.5,2)) #(rho1.prop, rho2.prop, rho3.prop)
 
     det.curr = ((sigma.sq[1]*sigma.sq[2]*((1-rho[3])^(b-1))*(1 + (b-1)*rho[3]))^(t*s))*((((1-rho[2])^(s-1))*(1 + (s-1)*rho[2]))^(t*b))*((((1-rho[1])^(t-1))*(1 + (t-1)*rho[1]))^(s*b))
@@ -81,15 +89,21 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   sigma.sq.update <- function (t,s,b,n,Y,X,B.est,lam.est,W,inv.R21,inv.R3,sigma.sq,rho){
 
+    kron<-function(...)
+    {
+      M<-list(...)
+      if(is.list(M[[1]])) { M<-M[[1]] }
+      JM<-1 ; for(j in 1:length(M)){ JM<-kronecker(JM,M[[j]]) }
+      JM
+    }
+
     g1 = 2; g2 = 2; #prior distribution for inv.sigma.sq ~ Ga(2,2)
     Sww <-  foreach(l = 1:n,.combine='+') %dopar% {crossprod(W[1:(t*s),l])}
-    #S <- sum( ( mat(Y[,,1,],3) - t(X)%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),]) )%*%kron(inv.R3,inv.R21)[1:(t*s),1:(t*s)]%*%t( mat(Y[,,1,],3) - t(X)%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),]) ) )
     S <- foreach(l = 1:n,.combine='+') %dopar% { ( c(Y[,,1,l]) - t(X)[l,]%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),l]) )%*%kron(inv.R3,inv.R21)[1:(t*s),1:(t*s)]%*%t( c(Y[,,1,l]) - t(X)[l,]%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),l]) ) }
     inv.sigma.sq <- rgamma(1, g1 + n*t*s, 0.5*S + 0.5*Sww + g2)
     sigma1.sq <- 1/inv.sigma.sq
 
     Sww2 <- foreach(l = 1:n,.combine='+') %dopar% {crossprod(W[(t*s + 1):(2*t*s),l])}
-    #S2 <- sum( ( mat(Y[,,2,],3) - t(X)%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),]) )%*%kron(inv.R3,inv.R21)[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]%*%t( mat(Y[,,2,],3) - t(X)%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),]) ) )
     S2 <- as.numeric(foreach(l = 1:n,.combine='+') %dopar% { ( c(Y[,,2,l]) - t(X)[l,]%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),l]) )%*%kron(inv.R3,inv.R21)[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]%*%t( c(Y[,,2,l]) - t(X)[l,]%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),l]) ) })
     inv.sigma.sq2 <- rgamma(1, g1 + n*t*s, 0.5*S2 + 0.5*Sww2 + g2)
     sigma2.sq <- 1/inv.sigma.sq2
@@ -121,6 +135,14 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   W.update <- function(t,s,b,n, lam.est, inv.Sigma, B.est, Y, X, sigma.sq, W){
 
+    kron<-function(...)
+    {
+      M<-list(...)
+      if(is.list(M[[1]])) { M<-M[[1]] }
+      JM<-1 ; for(j in 1:length(M)){ JM<-kronecker(JM,M[[j]]) }
+      JM
+    }
+
       for (jkl in 1:(t*s*b)){
         for (N in 1:n){
 
@@ -140,6 +162,14 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   eta.est.update <- function(X,vecy,inv.Sigma,W,lam.est, t,s,p){
 
+    kron<-function(...)
+    {
+      M<-list(...)
+      if(is.list(M[[1]])) { M<-M[[1]] }
+      JM<-1 ; for(j in 1:length(M)){ JM<-kronecker(JM,M[[j]]) }
+      JM
+    }
+
     eta.xy <- X%*%t(vecy)%*%inv.Sigma
     eta.xw <- X%*%t(W)%*%inv.Sigma*lam.est
     eta.xx <- X%*%t(X)
@@ -157,6 +187,14 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
   # Apply Theorem 1 (Marginalization)
 
   B.est.update <- function(X,Y,W,lam.est, inv.Sigma, inv.R1, inv.R2, t,s,p, omega, eta.est){
+
+    kron<-function(...)
+    {
+      M<-list(...)
+      if(is.list(M[[1]])) { M<-M[[1]] }
+      JM<-1 ; for(j in 1:length(M)){ JM<-kronecker(JM,M[[j]]) }
+      JM
+    }
 
     psi <- rbeta(1, 0.1 + sum(omega), 0.1 + t*s*b*p - sum(omega) )
     B <- array(NA, dim = c(t,s,2,p)) ;
@@ -289,14 +327,6 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   # MCMC iterations
   for (i in 1:(n.burn + n.save*thin)) { #}
-
-    kron<-function(...)
-    {
-      M<-list(...)
-      if(is.list(M[[1]])) { M<-M[[1]] }
-      JM<-1 ; for(j in 1:length(M)){ JM<-kronecker(JM,M[[j]]) }
-      JM
-    }
 
     rho.result = rho.update(t,s,rho,vecy,X,B.est,lam.est,W,sigma.sq)
     rho = rho.result[[1]]; inv.Sigma = rho.result[[2]]; inv.R21 = rho.result[[3]]; inv.R3 = rho.result[[4]]
