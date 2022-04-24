@@ -6,10 +6,6 @@ output:
 header-includes:
   - \usepackage{amsmath, amssymb, amsthm}
 ---
-  
-  ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Bayesian Regression Analysis of Skewed Tensor Responses
 
