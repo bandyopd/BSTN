@@ -12,7 +12,7 @@ devtools::install_github(repo='InkooLee/BSTN')
 ```
 ## Documentation
 
-Vignette is available at [https://github.com/InkooLee/BSTN/tree/master/vignettes/BSTN_vignette.html](file:///C:/Users/inkku/AppData/Local/Temp/RtmpIVsD9I/preview-69f4a5a4484.dir/BSTN_vignette.html)
+Vignette is available at [/InkooLee/BSTN/blob/master/vignettes/BSTN_vignette.html](http://htmlpreview.github.io/?https://github.com/InkooLee/BSTN/blob/master/vignettes/BSTN_vignette.html)
 
 ## Usage
 
