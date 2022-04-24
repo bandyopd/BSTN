@@ -26,7 +26,7 @@ devtools::install_github(repo='InkooLee/BSTN')
 ```
 ## Documentation
 
-Vignette is available at [/InkooLee/BSTN/blob/master/vignettes/BSTN_vignette.html]
+Vignette is available at [/InkooLee/BSTN/blob/master/vignettes/BSTN_vignette.html](https://github.com/InkooLee/BSTN/blob/master/vignettes/BSTN_vignette.html)
 
 ## Usage
 
