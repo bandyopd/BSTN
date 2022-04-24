@@ -52,17 +52,17 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
     det.curr = ((sigma.sq[1]*sigma.sq[2]*((1-rho[3])^(b-1))*(1 + (b-1)*rho[3]))^(t*s))*((((1-rho[2])^(s-1))*(1 + (s-1)*rho[2]))^(t*b))*((((1-rho[1])^(t-1))*(1 + (t-1)*rho[1]))^(s*b))
     det.prop = ((sigma.sq[1]*sigma.sq[2]*((1-rho.prop[3])^(b-1))*(1 + (b-1)*rho.prop[3]))^(t*s))*((((1-rho.prop[2])^(s-1))*(1 + (s-1)*rho.prop[2]))^(t*b))*((((1-rho.prop[1])^(t-1))*(1 + (t-1)*rho.prop[1]))^(s*b))
 
-    inv.curr = kronecker(diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2])))%*%((1/(1-rho[3]))*(diag(b) - (rho[3]/ (1 + (b-1)*rho[3]))*matrix(1,b,b)))%*%diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2]))), ((1/(1-rho[2]))*(diag(s) - (rho[2]/ (1 + (s-1)*rho[2]))*matrix(1,s,s))), ((1/(1-rho[1]))*(diag(t) - (rho[1]/ (1 + (t-1)*rho[1]))*matrix(1,t,t)))) # \{D_{\sigma}^{-1}R_{\rho_3}^{-1}D_{\sigma}^{-1} \otimes R_{\rho_2}^{-1} \otimes R_{\rho_1}^{-1}\}
-    inv.prop = kronecker(diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2])))%*%((1/(1-rho.prop[3]))*(diag(b) - (rho.prop[3]/ (1 + (b-1)*rho.prop[3]))*matrix(1,b,b)))%*%diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2]))), ((1/(1-rho.prop[2]))*(diag(s) - (rho.prop[2]/ (1 + (s-1)*rho.prop[2]))*matrix(1,s,s))), ((1/(1-rho.prop[1]))*(diag(t) - (rho.prop[1]/ (1 + (t-1)*rho.prop[1]))*matrix(1,t,t))))
+    inv.curr = kron(diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2])))%*%((1/(1-rho[3]))*(diag(b) - (rho[3]/ (1 + (b-1)*rho[3]))*matrix(1,b,b)))%*%diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2]))), ((1/(1-rho[2]))*(diag(s) - (rho[2]/ (1 + (s-1)*rho[2]))*matrix(1,s,s))), ((1/(1-rho[1]))*(diag(t) - (rho[1]/ (1 + (t-1)*rho[1]))*matrix(1,t,t)))) # \{D_{\sigma}^{-1}R_{\rho_3}^{-1}D_{\sigma}^{-1} \otimes R_{\rho_2}^{-1} \otimes R_{\rho_1}^{-1}\}
+    inv.prop = kron(diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2])))%*%((1/(1-rho.prop[3]))*(diag(b) - (rho.prop[3]/ (1 + (b-1)*rho.prop[3]))*matrix(1,b,b)))%*%diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2]))), ((1/(1-rho.prop[2]))*(diag(s) - (rho.prop[2]/ (1 + (s-1)*rho.prop[2]))*matrix(1,s,s))), ((1/(1-rho.prop[1]))*(diag(t) - (rho.prop[1]/ (1 + (t-1)*rho.prop[1]))*matrix(1,t,t))))
 
-    inv.R21.curr = kronecker( ((1/(1-rho[2]))*(diag(s) - (rho[2]/ (1 + (s-1)*rho[2]))*matrix(1,s,s))), ((1/(1-rho[1]))*(diag(t) - (rho[1]/ (1 + (t-1)*rho[1]))*matrix(1,t,t))) )
-    inv.R21.prop = kronecker( ((1/(1-rho.prop[2]))*(diag(s) - (rho.prop[2]/ (1 + (s-1)*rho.prop[2]))*matrix(1,s,s))), ((1/(1-rho.prop[1]))*(diag(t) - (rho.prop[1]/ (1 + (t-1)*rho.prop[1]))*matrix(1,t,t))) )
+    inv.R21.curr = kron( ((1/(1-rho[2]))*(diag(s) - (rho[2]/ (1 + (s-1)*rho[2]))*matrix(1,s,s))), ((1/(1-rho[1]))*(diag(t) - (rho[1]/ (1 + (t-1)*rho[1]))*matrix(1,t,t))) )
+    inv.R21.prop = kron( ((1/(1-rho.prop[2]))*(diag(s) - (rho.prop[2]/ (1 + (s-1)*rho.prop[2]))*matrix(1,s,s))), ((1/(1-rho.prop[1]))*(diag(t) - (rho.prop[1]/ (1 + (t-1)*rho.prop[1]))*matrix(1,t,t))) )
 
     inv.R3.curr = ((1/(1-rho[3]))*(diag(b) - (rho[3]/ (1 + (b-1)*rho[3]))*matrix(1,b,b)))
     inv.R3.prop = ((1/(1-rho.prop[3]))*(diag(b) - (rho.prop[3]/ (1 + (b-1)*rho.prop[3]))*matrix(1,b,b)))
 
-    logdens.curr = -0.5*n*log(det.curr) - 0.5*sum( (t(vecy) - t(X)%*%B.est - t(W)%*%(kronecker(diag(lam.est,2,2),diag(t*s))) )%*%inv.curr%*%(vecy - t(B.est)%*%X - (kronecker(diag(lam.est,2,2),diag(t*s))%*%W) ) )
-    logdens.prop = -0.5*n*log(det.prop) - 0.5*sum( (t(vecy) - t(X)%*%B.est - t(W)%*%(kronecker(diag(lam.est,2,2),diag(t*s))) )%*%inv.prop%*%(vecy - t(B.est)%*%X - (kronecker(diag(lam.est,2,2),diag(t*s))%*%W) ) )
+    logdens.curr = -0.5*n*log(det.curr) - 0.5*sum( (t(vecy) - t(X)%*%B.est - t(W)%*%(kron(diag(lam.est,2,2),diag(t*s))) )%*%inv.curr%*%(vecy - t(B.est)%*%X - (kron(diag(lam.est,2,2),diag(t*s))%*%W) ) )
+    logdens.prop = -0.5*n*log(det.prop) - 0.5*sum( (t(vecy) - t(X)%*%B.est - t(W)%*%(kron(diag(lam.est,2,2),diag(t*s))) )%*%inv.prop%*%(vecy - t(B.est)%*%X - (kron(diag(lam.est,2,2),diag(t*s))%*%W) ) )
 
     logratio = logdens.prop - logdens.curr
     if(log(runif(1)) > logratio) {rho = rho} else {rho = rho.prop}
@@ -83,14 +83,14 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
     g1 = 2; g2 = 2; #prior distribution for inv.sigma.sq ~ Ga(2,2)
     Sww <-  foreach(l = 1:n,.combine='+') %dopar% {crossprod(W[1:(t*s),l])}
-    #S <- sum( ( mat(Y[,,1,],3) - t(X)%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),]) )%*%kronecker(inv.R3,inv.R21)[1:(t*s),1:(t*s)]%*%t( mat(Y[,,1,],3) - t(X)%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),]) ) )
-    S <- foreach(l = 1:n,.combine='+') %dopar% { ( c(Y[,,1,l]) - t(X)[l,]%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),l]) )%*%kronecker(inv.R3,inv.R21)[1:(t*s),1:(t*s)]%*%t( c(Y[,,1,l]) - t(X)[l,]%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),l]) ) }
+    #S <- sum( ( mat(Y[,,1,],3) - t(X)%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),]) )%*%kron(inv.R3,inv.R21)[1:(t*s),1:(t*s)]%*%t( mat(Y[,,1,],3) - t(X)%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),]) ) )
+    S <- foreach(l = 1:n,.combine='+') %dopar% { ( c(Y[,,1,l]) - t(X)[l,]%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),l]) )%*%kron(inv.R3,inv.R21)[1:(t*s),1:(t*s)]%*%t( c(Y[,,1,l]) - t(X)[l,]%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),l]) ) }
     inv.sigma.sq <- rgamma(1, g1 + n*t*s, 0.5*S + 0.5*Sww + g2)
     sigma1.sq <- 1/inv.sigma.sq
 
     Sww2 <- foreach(l = 1:n,.combine='+') %dopar% {crossprod(W[(t*s + 1):(2*t*s),l])}
-    #S2 <- sum( ( mat(Y[,,2,],3) - t(X)%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),]) )%*%kronecker(inv.R3,inv.R21)[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]%*%t( mat(Y[,,2,],3) - t(X)%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),]) ) )
-    S2 <- as.numeric(foreach(l = 1:n,.combine='+') %dopar% { ( c(Y[,,2,l]) - t(X)[l,]%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),l]) )%*%kronecker(inv.R3,inv.R21)[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]%*%t( c(Y[,,2,l]) - t(X)[l,]%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),l]) ) })
+    #S2 <- sum( ( mat(Y[,,2,],3) - t(X)%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),]) )%*%kron(inv.R3,inv.R21)[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]%*%t( mat(Y[,,2,],3) - t(X)%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),]) ) )
+    S2 <- as.numeric(foreach(l = 1:n,.combine='+') %dopar% { ( c(Y[,,2,l]) - t(X)[l,]%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),l]) )%*%kron(inv.R3,inv.R21)[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]%*%t( c(Y[,,2,l]) - t(X)[l,]%*%B.est[,(t*s + 1):(2*t*s)] - lam.est[2]*t(W[(t*s + 1):(2*t*s),l]) ) })
     inv.sigma.sq2 <- rgamma(1, g1 + n*t*s, 0.5*S2 + 0.5*Sww2 + g2)
     sigma2.sq <- 1/inv.sigma.sq2
 
@@ -124,8 +124,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
       for (jkl in 1:(t*s*b)){
         for (N in 1:n){
 
-          D <-  kronecker(diag(c(lam.est^2)), diag(t*s))%*%inv.Sigma + diag(t*s*b); D <- solve(D)
-          E <- kronecker(diag(c(lam.est^2)), diag(t*s))%*%inv.Sigma%*%( t(mat(Y,4)) - t(B.est)%*%X)
+          D <-  kron(diag(c(lam.est^2)), diag(t*s))%*%inv.Sigma + diag(t*s*b); D <- solve(D)
+          E <- kron(diag(c(lam.est^2)), diag(t*s))%*%inv.Sigma%*%( t(mat(Y,4)) - t(B.est)%*%X)
           W[jkl,N] <- truncnorm::rtruncnorm(1, a=0, b=Inf, mean = c(D%*%E[,N])[jkl], sd = sqrt(D[jkl,jkl]) )
 
         }
@@ -143,7 +143,7 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
     eta.xy <- X%*%t(vecy)%*%inv.Sigma
     eta.xw <- X%*%t(W)%*%inv.Sigma*lam.est
     eta.xx <- X%*%t(X)
-    eta.A.inv <- solve(kronecker(eta.xx,inv.Sigma) + 10*diag(t*s*b*p) )
+    eta.A.inv <- solve(kron(eta.xx,inv.Sigma) + 10*diag(t*s*b*p) )
     vec.eta <- MASS::mvrnorm(1, mu = eta.A.inv%*%(as.vector(t(eta.xy)) - as.vector(t(eta.xw))), Sigma = eta.A.inv, tol = 1e-3)
     eta.est <- apply(mat(array(vec.eta, dim = c(t,s,p)),3),1,mean)
 
@@ -174,8 +174,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
           Sxx[j,] <- X[j,]%*%t(X)[,j]
           Sxy[j,] <- X[j,]%*%mat(Y[,,1,],3)%*%inv.Sigma[1:(t*s),1:(t*s)]
           Sxw[j,] <- X[j,]%*%t(W[1:(t*s),])%*%inv.Sigma[1:(t*s),1:(t*s)]*lam.est[1]
-          A.inv[j,,] <- solve(kronecker(Sxx[j,],inv.Sigma[1:(t*s),1:(t*s)]) + 100*diag(t*s*1))
-          A.inv0[j,,] <- solve(kronecker(Sxx[j,],inv.Sigma[1:(t*s),1:(t*s)]))
+          A.inv[j,,] <- solve(kron(Sxx[j,],inv.Sigma[1:(t*s),1:(t*s)]) + 100*diag(t*s*1))
+          A.inv0[j,,] <- solve(kron(Sxx[j,],inv.Sigma[1:(t*s),1:(t*s)]))
 
           log.det0[j,] <- (-(t*s*1)/2)*log(2*pi) + 0.5*logdet(A.inv0[j,,]) + (-(t*s*1)/2)*log(2)
           exponent0[j,] <- (-0.5)*t(as.vector(t(Sxy[j,])) - as.vector(t(Sxw[j,])))%*%A.inv0[j,,]%*%(as.vector(t(Sxy[j,])) - as.vector(t(Sxw[j,])))
@@ -191,8 +191,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
           Sxy2[j,] <- X[j,]%*%mat(Y[,,2,],3)%*%inv.Sigma[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]
           Sxw2[j,] <- X[j,]%*%t(W[(t*s + 1):(2*t*s),])%*%inv.Sigma[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]*lam.est[2]
-          A.inv2[j,,] <- solve(kronecker(Sxx[j,],inv.Sigma[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]) + 100*diag(t*s*1))
-          A.inv02[j,,] <- solve(kronecker(Sxx[j,],inv.Sigma[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]))
+          A.inv2[j,,] <- solve(kron(Sxx[j,],inv.Sigma[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]) + 100*diag(t*s*1))
+          A.inv02[j,,] <- solve(kron(Sxx[j,],inv.Sigma[(t*s + 1):(2*t*s),(t*s + 1):(2*t*s)]))
 
           log.det02[j,] <- (-(t*s*1)/2)*log(2*pi) + 0.5*logdet(A.inv02[j,,]) + (-(t*s*1)/2)*log(2)
           exponent02[j,] <- (-0.5)*t(as.vector(t(Sxy2[j,])) - as.vector(t(Sxw2[j,])))%*%A.inv02[j,,]%*%(as.vector(t(Sxy2[j,])) - as.vector(t(Sxw2[j,])))
@@ -281,7 +281,7 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   # fill missing responses with the new missing values
   for (N in 1:n){
-    vecy[,N] = ifelse (is.na(vecy[,N]), MASS::mvrnorm(length(delta_p[,N][(delta_p[,N]==1)]), mu = t(B.est)%*%X[,N] + kronecker(diag(lam.est),diag(t*s))%*%W[,N], Sigma = kronecker(R3,R2,R1)) , vecy[,N])
+    vecy[,N] = ifelse (is.na(vecy[,N]), MASS::mvrnorm(length(delta_p[,N][(delta_p[,N]==1)]), mu = t(B.est)%*%X[,N] + kron(diag(lam.est),diag(t*s))%*%W[,N], Sigma = kron(R3,R2,R1) ) , vecy[,N])
   }
   Y <- array(vecy, dim = c(t,s,b,n))
 
@@ -289,6 +289,14 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   # MCMC iterations
   for (i in 1:(n.burn + n.save*thin)) { #}
+
+    kron<-function(...)
+    {
+      M<-list(...)
+      if(is.list(M[[1]])) { M<-M[[1]] }
+      JM<-1 ; for(j in 1:length(M)){ JM<-kronecker(JM,M[[j]]) }
+      JM
+    }
 
     rho.result = rho.update(t,s,rho,vecy,X,B.est,lam.est,W,sigma.sq)
     rho = rho.result[[1]]; inv.Sigma = rho.result[[2]]; inv.R21 = rho.result[[3]]; inv.R3 = rho.result[[4]]
