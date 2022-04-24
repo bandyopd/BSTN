@@ -291,6 +291,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
   # MCMC iterations
   for (i in 1:(n.burn + n.save*thin)) { #}
 
+    source("./functions_tensor.R")
+
     rho.result = rho.update(t,s,rho,vecy,X,B.est,lam.est,W,sigma.sq)
     rho = rho.result[[1]]; inv.Sigma = rho.result[[2]]; inv.R21 = rho.result[[3]]; inv.R3 = rho.result[[4]]
     sigma.sq <- sigma.sq.update(t,s,b,n,Y,X,B.est,lam.est,W,inv.R21,inv.R3,sigma.sq,rho)
