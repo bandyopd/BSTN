@@ -57,8 +57,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
     rho.prop = c(rbeta(1,2.5,2), rbeta(1,2.5,2), rbeta(1,2.5,2)) #(rho1.prop, rho2.prop, rho3.prop)
 
-    det.curr = ((sigma.sq[1]*sigma.sq[2]*((1-rho[3])^(b-1))*(1 + (b-1)*rho[3]))^(t*s))*((((1-rho[2])^(s-1))*(1 + (s-1)*rho[2]))^(t*b))*((((1-rho[1])^(t-1))*(1 + (t-1)*rho[1]))^(s*b))
-    det.prop = ((sigma.sq[1]*sigma.sq[2]*((1-rho.prop[3])^(b-1))*(1 + (b-1)*rho.prop[3]))^(t*s))*((((1-rho.prop[2])^(s-1))*(1 + (s-1)*rho.prop[2]))^(t*b))*((((1-rho.prop[1])^(t-1))*(1 + (t-1)*rho.prop[1]))^(s*b))
+    #det.curr = ((sigma.sq[1]*sigma.sq[2]*((1-rho[3])^(b-1))*(1 + (b-1)*rho[3]))^(t*s))*((((1-rho[2])^(s-1))*(1 + (s-1)*rho[2]))^(t*b))*((((1-rho[1])^(t-1))*(1 + (t-1)*rho[1]))^(s*b))
+    #det.prop = ((sigma.sq[1]*sigma.sq[2]*((1-rho.prop[3])^(b-1))*(1 + (b-1)*rho.prop[3]))^(t*s))*((((1-rho.prop[2])^(s-1))*(1 + (s-1)*rho.prop[2]))^(t*b))*((((1-rho.prop[1])^(t-1))*(1 + (t-1)*rho.prop[1]))^(s*b))
 
     inv.curr = kron(diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2])))%*%((1/(1-rho[3]))*(diag(b) - (rho[3]/ (1 + (b-1)*rho[3]))*matrix(1,b,b)))%*%diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2]))), ((1/(1-rho[2]))*(diag(s) - (rho[2]/ (1 + (s-1)*rho[2]))*matrix(1,s,s))), ((1/(1-rho[1]))*(diag(t) - (rho[1]/ (1 + (t-1)*rho[1]))*matrix(1,t,t)))) # \{D_{\sigma}^{-1}R_{\rho_3}^{-1}D_{\sigma}^{-1} \otimes R_{\rho_2}^{-1} \otimes R_{\rho_1}^{-1}\}
     inv.prop = kron(diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2])))%*%((1/(1-rho.prop[3]))*(diag(b) - (rho.prop[3]/ (1 + (b-1)*rho.prop[3]))*matrix(1,b,b)))%*%diag(c(1/sqrt(sigma.sq[1]),1/sqrt(sigma.sq[2]))), ((1/(1-rho.prop[2]))*(diag(s) - (rho.prop[2]/ (1 + (s-1)*rho.prop[2]))*matrix(1,s,s))), ((1/(1-rho.prop[1]))*(diag(t) - (rho.prop[1]/ (1 + (t-1)*rho.prop[1]))*matrix(1,t,t))))
@@ -69,8 +69,11 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
     inv.R3.curr = ((1/(1-rho[3]))*(diag(b) - (rho[3]/ (1 + (b-1)*rho[3]))*matrix(1,b,b)))
     inv.R3.prop = ((1/(1-rho.prop[3]))*(diag(b) - (rho.prop[3]/ (1 + (b-1)*rho.prop[3]))*matrix(1,b,b)))
 
-    logdens.curr = -0.5*n*log(det.curr) - 0.5*sum( (t(vecy) - t(X)%*%B.est - t(W)%*%(kron(diag(lam.est,2,2),diag(t*s))) )%*%inv.curr%*%(vecy - t(B.est)%*%X - (kron(diag(lam.est,2,2),diag(t*s))%*%W) ) )
-    logdens.prop = -0.5*n*log(det.prop) - 0.5*sum( (t(vecy) - t(X)%*%B.est - t(W)%*%(kron(diag(lam.est,2,2),diag(t*s))) )%*%inv.prop%*%(vecy - t(B.est)%*%X - (kron(diag(lam.est,2,2),diag(t*s))%*%W) ) )
+    #logdens.curr = -0.5*n*log(det.curr) - 0.5*sum( (t(vecy) - t(X)%*%B.est - t(W)%*%(kron(diag(lam.est,2,2),diag(t*s))) )%*%inv.curr%*%(vecy - t(B.est)%*%X - (kron(diag(lam.est,2,2),diag(t*s))%*%W) ) )
+    #logdens.prop = -0.5*n*log(det.prop) - 0.5*sum( (t(vecy) - t(X)%*%B.est - t(W)%*%(kron(diag(lam.est,2,2),diag(t*s))) )%*%inv.prop%*%(vecy - t(B.est)%*%X - (kron(diag(lam.est,2,2),diag(t*s))%*%W) ) )
+
+    logdens.curr = - 0.5*sum( (t(vecy) - t(X)%*%B.est - t(W)%*%(kron(diag(lam.est,2,2),diag(t*s))) )%*%inv.curr%*%(vecy - t(B.est)%*%X - (kron(diag(lam.est,2,2),diag(t*s))%*%W) ) )
+    logdens.prop = - 0.5*sum( (t(vecy) - t(X)%*%B.est - t(W)%*%(kron(diag(lam.est,2,2),diag(t*s))) )%*%inv.prop%*%(vecy - t(B.est)%*%X - (kron(diag(lam.est,2,2),diag(t*s))%*%W) ) )
 
     logratio = logdens.prop - logdens.curr
     if(log(runif(1)) > logratio) {rho = rho} else {rho = rho.prop}
