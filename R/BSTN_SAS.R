@@ -49,6 +49,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   rho.update <- function(t,s,rho,vecy,X,B.est,lam.est,W,sigma.sq){
 
+    source("./functions_tensor.R")
+
     rho.prop = c(rbeta(1,2.5,2), rbeta(1,2.5,2), rbeta(1,2.5,2)) #(rho1.prop, rho2.prop, rho3.prop)
 
     det.curr = ((sigma.sq[1]*sigma.sq[2]*((1-rho[3])^(b-1))*(1 + (b-1)*rho[3]))^(t*s))*((((1-rho[2])^(s-1))*(1 + (s-1)*rho[2]))^(t*b))*((((1-rho[1])^(t-1))*(1 + (t-1)*rho[1]))^(s*b))
@@ -83,6 +85,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   sigma.sq.update <- function (t,s,b,n,Y,X,B.est,lam.est,W,inv.R21,inv.R3,sigma.sq,rho){
 
+    source("./functions_tensor.R")
+
     g1 = 2; g2 = 2; #prior distribution for inv.sigma.sq ~ Ga(2,2)
     Sww <-  foreach(l = 1:n,.combine='+') %dopar% {crossprod(W[1:(t*s),l])}
     #S <- sum( ( mat(Y[,,1,],3) - t(X)%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),]) )%*%kron(inv.R3,inv.R21)[1:(t*s),1:(t*s)]%*%t( mat(Y[,,1,],3) - t(X)%*%B.est[,1:(t*s)] - lam.est[1]*t(W[1:(t*s),]) ) )
@@ -105,6 +109,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   lam.est.update <- function (W,inv.Sigma,B.est,X,Y,t,s,b,n){
 
+    source("./functions_tensor.R")
+
     Swinvw <- foreach(l = 1:n,.combine='+') %dopar% {t(W[1:(t*s),l])%*%inv.Sigma[1:(t*s),1:(t*s)]%*%W[1:(t*s),l]}
     A.lam <- (b^2)*Swinvw + 1
     B.lam <- foreach(l = 1:n,.combine='+') %dopar% {( c(Y[,,1,l]) - t(X)[l,]%*%B.est[,1:(t*s)])%*%inv.Sigma[1:(t*s),1:(t*s)]%*%W[1:(t*s),l]*(b^2) + 4 }
@@ -122,6 +128,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
   # Update W = abs(Z_2) : Note that the each component is sampled from univariate truncated normal distribution
 
   W.update <- function(t,s,b,n, lam.est, inv.Sigma, B.est, Y, X, sigma.sq, W){
+
+    source("./functions_tensor.R")
 
       for (jkl in 1:(t*s*b)){
         for (N in 1:n){
@@ -142,6 +150,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   eta.est.update <- function(X,vecy,inv.Sigma,W,lam.est, t,s,p){
 
+    source("./functions_tensor.R")
+
     eta.xy <- X%*%t(vecy)%*%inv.Sigma
     eta.xw <- X%*%t(W)%*%inv.Sigma*lam.est
     eta.xx <- X%*%t(X)
@@ -159,6 +169,8 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
   # Apply Theorem 1 (Marginalization)
 
   B.est.update <- function(X,Y,W,lam.est, inv.Sigma, inv.R1, inv.R2, t,s,p, omega, eta.est){
+
+    source("./functions_tensor.R")
 
     psi <- rbeta(1, 0.1 + sum(omega), 0.1 + t*s*b*p - sum(omega) )
     B <- array(NA, dim = c(t,s,2,p)) ;
@@ -280,6 +292,7 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
   }
 
   # fill missing responses with the new missing values
+  source("./functions_tensor.R")
 
   for (N in 1:n){
     vecy[,N] = ifelse (is.na(vecy[,N]), MASS::mvrnorm(length(delta_p[,N][(delta_p[,N]==1)]), mu = t(B.est)%*%X[,N] + kron(diag(lam.est),diag(t*s))%*%W[,N], Sigma = kron(R3,R2,R1)) , vecy[,N])
@@ -290,8 +303,6 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   # MCMC iterations
   for (i in 1:(n.burn + n.save*thin)) { #}
-
-    source("./functions_tensor.R")
 
     rho.result = rho.update(t,s,rho,vecy,X,B.est,lam.est,W,sigma.sq)
     rho = rho.result[[1]]; inv.Sigma = rho.result[[2]]; inv.R21 = rho.result[[3]]; inv.R3 = rho.result[[4]]
