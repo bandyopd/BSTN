@@ -31,6 +31,7 @@ setwd('')
 data <- read.csv("PDdata.csv")
 
 ## load required functions
+source("./functions_tensor.R")
 source("./BSTN_SAS.R")
 
 #'@ Inputs
