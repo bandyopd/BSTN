@@ -22,21 +22,17 @@ The `BSTN` package provides posterior sampling algorithm for skewed tensor norma
 
   
   ```{r, eval = FALSE}
-## Load library
+## Load library and required package
 library(BSTN)
+library(abind)
 
 ## load GAAD data
-rm(list = ls())
-
-setwd('C:/Users/inkku/OneDrive/Documents/BSTN')
+setwd('')
 data <- read.csv("PDdata.csv")
-setwd('C:/Users/inkku/OneDrive/Documents/BSTN/R')
+
+## load required functions
 source("./functions_tensor.R")
 source("./BSTN_SAS.R")
-
-
-## load required pacakage ##
-library(abind)
 
 #'@ Inputs
 #' Y \in R^{t x s x b x n} three way tensor of responses with n subjects
