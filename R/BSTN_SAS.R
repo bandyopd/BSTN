@@ -236,7 +236,7 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
 
   #initial values
 
-  B.est <- solve(X%*%t(X))%*%X%*%t(vecy) # OLS
+  B.est <- matrix(rep(c(1,0.01,0.2,0.2,0.2,0.2),t*s*b), p , t*s*b)
   W <- matrix(0.2, t*s*b,n) # vecotrize W = |Z_{2i}|
   rho <- matrix(c(0.6,0.6,0.6), 3, 1)
   sigma.sq <- c(1,1)
