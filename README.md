@@ -58,12 +58,11 @@ Y <- array(Y, dim = c(t,s,b,n)) # t x s x b x n
 #'Y[,,,2] # 290 subjects for CAL
 
 
-## covariates ## sample every 168th row (5 covariates (vector) per one subject)
+## covariates
 X <- data[,7:11]
 X <- X[seq(1, nrow(X), 168), ]
 rownames(X) <- NULL
-X <- as.matrix(X) # 290 subjects x (Age,Gender,BMI,Smoker,HbA1c) matrix (290*5 matrix)
-X <- t(X) # p(5) x n(290)
+X <- t(as.matrix(X)) # matrix of covariates (Age,Gender,BMI,Smoker,HbA1c) x number of subjects
 X <- rbind(t(matrix(1,n)),X) # including intercept term
 p <- dim(X)[1]
 
