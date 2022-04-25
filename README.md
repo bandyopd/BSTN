@@ -66,7 +66,7 @@ X <- t(as.matrix(X)) # matrix of covariates (Age,Gender,BMI,Smoker,HbA1c) x numb
 X <- rbind(t(matrix(1,n)),X) # including intercept term
 p <- dim(X)[1]
 
-# Missing Responses
+# Missing Responses & indicator function
 vecy <- t(mat(Y,4))
 vecym <- matrix(NA, t*s*b, n)
 vecym[which(!is.na(vecy))] <- 0; vecym[which(is.na(vecy))] <- 1; delta_p <- vecym; # delta_p is t*s*b by n matrix with missing = 1, observed = 0
