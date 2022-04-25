@@ -335,8 +335,6 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
     rho = rho.result[[1]]; inv.Sigma = rho.result[[2]]; inv.R21 = rho.result[[3]]; inv.R3 = rho.result[[4]]
     sigma.sq <- sigma.sq.update(t,s,b,n,Y,X,B.est,lam.est,W,inv.R21,inv.R3,sigma.sq,rho)
     lam.est = lam.est.update(W,inv.Sigma,B.est,X,Y,t,s,b,n)
-
-    #W =  W.update(t,s,b,n, lam.est, inv.Sigma, B.est, Y, X, sigma.sq, W)
     eta.est = eta.est.update(X,vecy,inv.Sigma,W,lam.est, t,s,p)
     B.result =  B.est.update(X,Y,W,lam.est,inv.Sigma, inv.R1, inv.R2, t,s,p, omega, eta.est)
     B.est = B.result[[1]]; omega = B.result[[2]]; gamma.est = B.result[[3]]
