@@ -365,7 +365,6 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
         )
       )
     }
-    #print(c("Iteration",i, round(rho,4), round(sigma.sq,4), round(lam.est,4)))
 
   } # end sampler
 
