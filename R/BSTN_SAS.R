@@ -176,7 +176,7 @@ BSTN_SAS <- function(Y,X,vecy, n.burn = 10, n.save = 100, thin = 1){
     eta.xy <- X%*%t(vecy)%*%inv.Sigma
     eta.xw <- X%*%t(W)%*%inv.Sigma*lam.est
     eta.xx <- X%*%t(X)
-    eta.A.inv <- solve(kron(eta.xx,inv.Sigma) + 10*diag(t*s*b*p) )
+    eta.A.inv <- solve(kron(eta.xx,inv.Sigma) + 0.1*diag(t*s*b*p) )
     vec.eta <- MASS::mvrnorm(1, mu = eta.A.inv%*%(as.vector(t(eta.xy)) - as.vector(t(eta.xw))), Sigma = eta.A.inv, tol = 1e-3)
     eta.est <- apply(mat(array(vec.eta, dim = c(t,s,p)),3),1,mean)
 
