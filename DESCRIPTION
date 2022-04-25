@@ -2,7 +2,7 @@ Package: BSTN
 Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.1.0
-Author: Who wrote it
+Author: Inkoo Lee, Debajyoti Sinha, Qing Mai, Xin Zhang and Dipankar Bandyopadhyay
 Maintainer: Inkoo Lee <inkoo.lee@rice.edu>
 Description: Bayesian Regression Analayis of Skewed Tensor Responses
 License: GPL-3
