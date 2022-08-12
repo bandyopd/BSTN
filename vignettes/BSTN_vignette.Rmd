@@ -17,11 +17,11 @@ options(knitr.table.format = 'markdown')
 
 Inkoo Lee
 
-Last Updated - April 22, 2022
+Last Updated - August 10, 2022
 
 ## Paper 
 
-- Lee, I., Sinha, D., Mai, Q., Zhang, X. & Bandyopadhyay, D. (2021+). *Bayesian Regression Analysis of Skewed Tensor Responses.* [[Github]](https://github.com/InkooLee/BSTN)
+- Lee, I., Sinha, D., Mai, Q., Zhang, X. & Bandyopadhyay, D. (2022+). *Bayesian Regression Analysis of Skewed Tensor Responses.* (Accepted), *Biometrics*
 
 
 ## Skewed tensor response model
