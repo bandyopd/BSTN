@@ -27,8 +27,7 @@ library(BSTN)
 library(abind)
 
 ## load GAAD data
-setwd('')
-data <- read.csv("PDdata.csv")
+load('PDdata.rda')
 
 ## load required functions
 source("./functions_tensor.R")
