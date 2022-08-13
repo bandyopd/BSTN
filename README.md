@@ -27,7 +27,7 @@ library(BSTN)
 library(abind)
 
 ## load GAAD data
-load('PDdata.rda')
+data(PDdata)
 
 ## load required functions
 source("./functions_tensor.R")
