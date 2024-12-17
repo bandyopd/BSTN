@@ -1,6 +1,6 @@
 # Bayesian Regression Analysis of Skewed Tensor Responses
 
-This repository includes code for BSTN (Bayesian Skewed Tensor Normal) model with sparsity inducing prior described in the paper "Bayesian Regression Analysis of Skewed Tensor Responses", by Lee et al (2022+), Biometrics.
+This repository includes code for BSTN (Bayesian Skewed Tensor Normal) model with sparsity inducing prior described in the paper: Lee I, Mai Q, Sinha D, Zhang X and Bandyopadhyay D (2023). Bayesian regression analysis of skewed tensor responses, Biometrics, 79(3), 1814-1825
 
 ## Installation
 
